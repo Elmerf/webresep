@@ -8,7 +8,7 @@ const RecipeSchema = new Schema({
   bahan: Array,
   caramasak: Array,
   image: String,
-  iduser: String,
+  iduser: require('mongodb').ObjectID,
   createdAt: Date,
   updatedAt: Date,
 }, {_id: false});

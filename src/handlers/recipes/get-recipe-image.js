@@ -5,7 +5,7 @@ const getRecipeImage = async (request, h) => {
   try {
     const {id} = request.params;
     const result = await Recipe.findOne({'_id': id}, 'namaresep').exec();
-    const path = `./src/assets/${result.namaresep}.jpg`;
+    const path = `./src/assets/${result._id}.jpg`;
     if (fs.existsSync(path)) {
       return h.file(path);
     }

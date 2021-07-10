@@ -11,15 +11,26 @@ const handleRecipeUpload = (payload, id) => {
       image,
     } = payload;
     const updatedAt = new Date().toISOString();
-    const imagePath = `./src/assets/${namaresep}.jpg`;
-    const imageBuffer = Buffer.from(image, 'base64');
-    fs.writeFile(imagePath, imageBuffer, (err) => {
-      if (err) {
-        reject(err);
-      }
-      bahan = JSON.parse(bahan);
-      caramasak = JSON.parse(caramasak);
-      console.log(id);
+    if (image !== undefined) {
+      const imagePath = `./src/assets/${id}.jpg`;
+      const imageBuffer = Buffer.from(image, 'base64');
+      fs.writeFile(imagePath, imageBuffer, (err) => {
+        if (err) {
+          reject(err);
+        }
+        bahan = JSON.parse(bahan);
+        caramasak = JSON.parse(caramasak);
+        console.log(id);
+        Recipe.findOneAndUpdate({'_id': id}, {
+          namaresep,
+          deskripsi,
+          bahan,
+          caramasak,
+          updatedAt,
+        }).exec();
+        resolve({message: 'Recipe Edited succesfully!'});
+      });
+    } else {
       Recipe.findOneAndUpdate({'_id': id}, {
         namaresep,
         deskripsi,
@@ -28,7 +39,7 @@ const handleRecipeUpload = (payload, id) => {
         updatedAt,
       }).exec();
       resolve({message: 'Recipe Edited succesfully!'});
-    });
+    }
   });
 };
 

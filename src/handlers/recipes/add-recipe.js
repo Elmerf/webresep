@@ -12,9 +12,10 @@ const handleRecipeUpload = (payload) => {
       image,
       iduser,
     } = payload;
+    const id = new mongoose.Types.ObjectId().toHexString();
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
-    const imagePath = `./src/assets/${namaresep}.jpg`;
+    const imagePath = `./src/assets/${id}.jpg`;
     const imageBuffer = Buffer.from(image, 'base64');
     fs.writeFile(imagePath, imageBuffer, (err) => {
       if (err) {
@@ -22,12 +23,10 @@ const handleRecipeUpload = (payload) => {
       }
       bahan = JSON.parse(bahan);
       caramasak = JSON.parse(caramasak);
-      const id = new mongoose.Types.ObjectId().toHexString();
       const recipe = new Recipe({
         _id: id,
         namaresep,
         deskripsi,
-        imagePath,
         bahan,
         caramasak,
         image: `http://localhost:3000/recipe/images/${id}`,
@@ -46,8 +45,30 @@ const addRecipe = async (request, h) => {
     const {
       payload,
     } = request;
-    const result = await handleRecipeUpload(payload);
-    return result;
+    let result;
+    if (payload.image !== undefined) {
+      result = await handleRecipeUpload(payload);
+      return result;
+    } else {
+      const id = new mongoose.Types.ObjectId().toHexString();
+      const createdAt = new Date().toISOString();
+      const updatedAt = createdAt;
+      const bahan = JSON.parse(payload.bahan);
+      const caramasak = JSON.parse(payload.caramasak);
+      result = new Recipe({
+        _id: id,
+        namaresep: payload.namaresep,
+        deskripsi: payload.deskripsi,
+        bahan,
+        caramasak,
+        image: `http://localhost:3000/recipe/images/${id}`,
+        iduser: payload.iduser,
+        createdAt,
+        updatedAt,
+      });
+      result.save();
+      return h.response({message: 'Recipe added succesfully!'});
+    }
   } catch (err) {
     return h.response(err).code(500);
   }
