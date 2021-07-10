@@ -46,7 +46,7 @@ const addRecipe = async (request, h) => {
       payload,
     } = request;
     let result;
-    if (payload.image !== undefined) {
+    if (payload.image !== 'undefined') {
       result = await handleRecipeUpload(payload);
       return result;
     } else {

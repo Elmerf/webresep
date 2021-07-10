@@ -11,16 +11,15 @@ const handleRecipeUpload = (payload, id) => {
       image,
     } = payload;
     const updatedAt = new Date().toISOString();
-    if (image !== undefined) {
+    bahan = JSON.parse(bahan);
+    caramasak = JSON.parse(caramasak);
+    if (image !== 'undefined') {
       const imagePath = `./src/assets/${id}.jpg`;
       const imageBuffer = Buffer.from(image, 'base64');
       fs.writeFile(imagePath, imageBuffer, (err) => {
         if (err) {
           reject(err);
         }
-        bahan = JSON.parse(bahan);
-        caramasak = JSON.parse(caramasak);
-        console.log(id);
         Recipe.findOneAndUpdate({'_id': id}, {
           namaresep,
           deskripsi,
